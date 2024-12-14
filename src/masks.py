@@ -1,4 +1,4 @@
-def get_mask_card_number(card_number: int) -> str:
+def get_mask_card_number(card_number: str) -> str:
     """
     Функция преобразования номера карты в "полный" зашифрованный номер
     :param card_number: номер карты пользователя
@@ -11,7 +11,7 @@ def get_mask_card_number(card_number: int) -> str:
         return "Некорректный номер"
 
 
-def get_mask_account(account_number: int) -> str:
+def get_mask_account(account_number: str) -> str:
     """
     Функция преобразования номера счета в короткий зашифрованный номер
     :param account_number: номер счета пользователя
