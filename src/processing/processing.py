@@ -11,12 +11,8 @@ def filter_by_state(input_list: List[Dict], state_default: str = "EXECUTED") -> 
     """
     new_list = []
     for element in input_list:
-        if state_default == "EXECUTED":
-            if element["state"] == state_default:
-                new_list.append(element)
-        elif state_default == "CANCELED":
-            if element["state"] == state_default:
-                new_list.append(element)
+        if element["state"] == state_default:
+            new_list.append(element)
     return new_list
 
 

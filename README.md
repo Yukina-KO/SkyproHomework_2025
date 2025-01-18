@@ -104,7 +104,85 @@ project/
 │   │   ├── filter_by_state.py
 │   │   ├── sort_by_date.py
 │   ├── widget/
-│       ├── get_date.py
-│       ├── mask_account_card.py
+│   │   ├── get_date.py
+│   │   ├── mask_account_card.py
+│   ├── processing/
+│       ├── test_masks.py
+│       ├── test_processing.py
+│       ├── test_widget.py
 └── README.md
 ```
+
+---
+
+## Тесты
+
+### Маскировка информации (`test_masks.py`)
+Тесты для функций `get_mask_account` и `get_mask_card_number`. Основные сценарии:
+- Проверка корректного маскирования.
+- Обработка некорректных данных (пустые строки, неправильная длина, нецифровые символы).
+- Параметризованные тесты для различных случаев.
+
+Пример параметризованного теста:
+```python
+@pytest.mark.parametrize("account_number, expected", [
+    ("12345678901234567890", "**7890"),
+    ("12345678", "Некорректный номер"),
+    ("1234abcd567890123456", "Некорректный номер"),
+    ("abcd1234567890123456", "Некорректный номер")
+])
+def test_get_mask_account_parametrized(account_number, expected):
+    assert get_mask_account(account_number) == expected
+```
+
+### Обработка данных (`test_processing.py`)
+Тесты для функций `filter_by_state` и `sort_by_date`. Основные сценарии:
+- Фильтрация по статусу с различными наборами данных (простой, пустой, с дубликатами).
+- Сортировка по дате (по возрастанию и убыванию).
+- Проверка обработки некорректных дат.
+- Использование фикстур для подготовки тестовых данных.
+
+Пример теста сортировки:
+```python
+@pytest.mark.parametrize("fixture_name, sort_increase, expected", [
+    ("test_data_simple", True, [
+        {"state": "EXECUTED", "date": "2023-01-01T12:00:00", "data": 1},
+        {"state": "CANCELED", "date": "2023-01-02T12:00:00", "data": 2},
+        {"state": "PENDING", "date": "2023-01-03T12:00:00", "data": 3},
+        {"state": "EXECUTED", "date": "2023-01-04T12:00:00", "data": 4}
+    ]),
+    ("test_data_empty", True, [])
+])
+def test_sort_by_date(fixture_name, sort_increase, expected, request):
+    input_list = request.getfixturevalue(fixture_name)
+    assert sort_by_date(input_list, sort_increase) == expected
+```
+
+### Виджет (`test_widget.py`)
+Тесты для функций `mask_account_card` и `get_date`. Основные сценарии:
+- Проверка корректного преобразования дат.
+- Обработка некорректных форматов даты.
+- Маскирование номеров карт и счетов с различными форматами.
+- Параметризованные тесты для универсальности.
+
+Пример теста преобразования даты:
+```python
+@pytest.mark.parametrize("date, expected", [
+    ("2023-01-01", "01.01.2023"),
+    ("1999-12-31", "31.12.1999"),
+    ("20-01-01", "Неверный формат даты")
+])
+def test_get_date_parametrized(date, expected):
+    assert get_date(date) == expected
+```
+
+---
+
+Для запуска тестов используйте:
+```bash
+pytest src/processing/test_masks.py
+pytest src/processing/test_processing.py
+pytest src/processing/test_widget.py
+```
+
+
