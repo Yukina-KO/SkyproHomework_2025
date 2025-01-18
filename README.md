@@ -4,6 +4,9 @@
 - Сортировка данных по дате.
 - Сокрытие чувствительной информации (счета и карты).
 - Форматирование дат для удобного чтения.
+- Фильтрация данных по валюте.
+- Генерация описаний транзакций.
+- Генерация номеров карт в заданном диапазоне.
 
 ---
 
@@ -41,6 +44,30 @@ mask_account_card(account_card: str) -> str
 get_date(date: str) -> str
 ```
 
+### 5. Фильтрация данных по валюте
+Фильтрует список транзакций по заданному коду валюты.
+
+Функция: `filter_by_state`
+```python
+filter_by_state(input_list: List[Dict], currency: str) -> Generator[dict, None, None]
+```
+
+### 6. Генерация описаний транзакций
+Генерирует описания для каждого элемента из списка транзакций.
+
+Функция: `transaction_descriptions`
+```python
+transaction_descriptions(input_list: List[Dict]) -> Generator[str, None, None]
+```
+
+### 7. Генерация номеров карт
+Создает номера карт в заданном диапазоне в формате `XXXX XXXX XXXX XXXX`.
+
+Функция: `card_number_generator`
+```python
+card_number_generator(start: int, end: int) -> Generator[str, None, None]
+```
+
 ---
 
 ## Примеры использования
@@ -76,6 +103,21 @@ masked_account = mask_account_card("Счет 64686473678894779589")
 formatted_date = get_date("2024-03-11T02:26:18.671407")
 ```
 
+### Фильтрация по валюте
+```python
+usd_transactions = list(filter_by_state(transactions, "USD"))
+```
+
+### Генерация описаний транзакций
+```python
+descriptions = list(transaction_descriptions(transactions))
+```
+
+### Генерация номеров карт
+```python
+card_numbers = list(card_number_generator(1, 3))
+```
+
 ---
 
 ## Установка
@@ -97,6 +139,10 @@ pip install -r requirements.txt
 ```
 project/
 ├── src/
+│   ├── generators/
+│   │   ├── filter_by_state.py
+│   │   ├── transaction_descriptions.py
+│   │   ├── card_number_generator.py
 │   ├── masks/
 │   │   ├── get_mask_account.py
 │   │   ├── get_mask_card_number.py
@@ -107,6 +153,7 @@ project/
 │   │   ├── get_date.py
 │   │   ├── mask_account_card.py
 │   ├── processing/
+│       ├── test_generators.py
 │       ├── test_masks.py
 │       ├── test_processing.py
 │       ├── test_widget.py
@@ -176,6 +223,41 @@ def test_get_date_parametrized(date, expected):
     assert get_date(date) == expected
 ```
 
+### Генераторы (`test_generators.py`)
+Тесты для функций `filter_by_state`, `transaction_descriptions`, `card_number_generator`. Основные сценарии:
+
+#### Тесты для `filter_by_state`
+- Проверка корректной фильтрации по валюте.
+- Проверка обработки пустого списка.
+- Проверка обработки отсутствующей валюты.
+
+#### Тесты для `transaction_descriptions`
+- Генерация описаний транзакций.
+- Проверка пустого списка.
+
+#### Тесты для `card_number_generator`
+- Проверка формата номеров.
+- Генерация для крайних значений.
+- Проверка пустого диапазона.
+
+Пример теста генерации номеров карт:
+```python
+@pytest.mark.parametrize("start, end, expected", [
+    (1, 3, [
+        "0000 0000 0000 0001",
+        "0000 0000 0000 0002",
+        "0000 0000 0000 0003"
+    ]),
+    (9999999999999998, 9999999999999999, [
+        "9999 9999 9999 9998",
+        "9999 9999 9999 9999"
+    ]),
+    (5, 4, [])
+])
+def test_card_number_generator(start, end, expected):
+    assert list(card_number_generator(start, end)) == expected
+```
+
 ---
 
 Для запуска тестов используйте:
@@ -183,6 +265,4 @@ def test_get_date_parametrized(date, expected):
 pytest src/processing/test_masks.py
 pytest src/processing/test_processing.py
 pytest src/processing/test_widget.py
-```
-
-
+pytest src/processing/test_generators.py
