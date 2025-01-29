@@ -4,6 +4,7 @@ from src.generators.generators import transaction_descriptions
 from src.masks.masks import get_mask_account, get_mask_card_number
 from src.processing.processing import filter_by_state, sort_by_date
 from src.widget.widget import get_date, mask_account_card
+from src.decorators.decorators import log
 
 print(get_mask_card_number("1234567891234567"))
 print(get_mask_account("12345678901234567890"))
@@ -90,3 +91,11 @@ for _ in range(5):
 
 for card_number in card_number_generator(1, 15):
     print(card_number)
+
+
+@log(filename="mylog.txt")
+def my_function(x: int, y: int) -> int:
+    return x + y
+
+
+my_function(1, 2)
