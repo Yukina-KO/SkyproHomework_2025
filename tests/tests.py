@@ -1,10 +1,10 @@
+from src.decorators.decorators import log
 from src.generators.generators import card_number_generator
 from src.generators.generators import filter_by_state as filter_by_state_card
 from src.generators.generators import transaction_descriptions
 from src.masks.masks import get_mask_account, get_mask_card_number
 from src.processing.processing import filter_by_state, sort_by_date
 from src.widget.widget import get_date, mask_account_card
-from src.decorators.decorators import log
 
 print(get_mask_card_number("1234567891234567"))
 print(get_mask_account("12345678901234567890"))
