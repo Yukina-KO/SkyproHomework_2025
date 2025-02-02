@@ -1,3 +1,4 @@
+from src.decorators.decorators import log
 from src.generators.generators import card_number_generator
 from src.generators.generators import filter_by_state as filter_by_state_card
 from src.generators.generators import transaction_descriptions
@@ -90,3 +91,11 @@ for _ in range(5):
 
 for card_number in card_number_generator(1, 15):
     print(card_number)
+
+
+@log(filename="mylog.txt")
+def my_function(x: int, y: int) -> int:
+    return x + y
+
+
+my_function(1, 2)
