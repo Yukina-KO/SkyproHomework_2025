@@ -10,5 +10,4 @@ def get_transactions() -> None:
     with open(file_path, "r", encoding="utf-8") as f:
         data = json.load(f)
 
-    for item in data:
-        print(item)
+    return data

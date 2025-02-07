@@ -1,5 +1,5 @@
 import os
-from typing import Union, Dict, Any
+from typing import Union
 
 import requests
 from dotenv import load_dotenv
@@ -8,7 +8,7 @@ load_dotenv()
 API_KEY = os.getenv("API_KEY")
 
 
-def convert_to_rub(transaction: dict) -> Union[str, Dict[str, Any]]:
+def convert_to_rub(transaction: dict) -> Union[float, str]:
     """
     Возвращает сумму транзакции в рублях.
     """
@@ -22,16 +22,19 @@ def convert_to_rub(transaction: dict) -> Union[str, Dict[str, Any]]:
             headers = {"apikey": f"{API_KEY}"}
             response = requests.request(
                 "GET",
-                f"https://api.apilayer.com/exchangerates_data/convert?to={value_rub}" f"&from={currency}&amount={amount}",
+                f"https://api.apilayer.com/exchangerates_data/convert?to={value_rub}&from={currency}&amount={amount}",
                 headers=headers,
                 data=payload,
             )
             if response.status_code == 200:
-                result = response.text
-                return result
+                result = response.json().get("result")  # Получаем числовое значение
+                if result is not None:
+                    return float(result)
+                else:
+                    return "Ошибка: Некорректный ответ API"
             else:
                 return "Во время конвертации произошла ошибка"
         else:
-            return transaction
+            return float(amount)  # Если валюта уже RUB, просто возвращаем float
     else:
         return "Данные отсутствуют"
