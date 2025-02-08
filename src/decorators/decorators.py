@@ -52,5 +52,7 @@ def log(filename: Optional[str] = None) -> Callable:
             finally:
                 logger.info(f"Завершение выполнения функции {func.__name__}")
                 logger.handlers[0].flush()  # Сбрасываю буфер
+
         return wrapper
+
     return decorator

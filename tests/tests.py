@@ -1,9 +1,14 @@
+import json
+import os
+
 from src.decorators.decorators import log
+from src.external_api.external_api import convert_to_rub
 from src.generators.generators import card_number_generator
 from src.generators.generators import filter_by_state as filter_by_state_card
 from src.generators.generators import transaction_descriptions
 from src.masks.masks import get_mask_account, get_mask_card_number
 from src.processing.processing import filter_by_state, sort_by_date
+from src.utils.transaction import get_transactions
 from src.widget.widget import get_date, mask_account_card
 
 print(get_mask_card_number("1234567891234567"))
@@ -99,3 +104,12 @@ def my_function(x: int, y: int) -> int:
 
 
 my_function(1, 2)
+
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+file_path = os.path.join(BASE_DIR, "data", "operations.json")
+
+with open(file_path, "r", encoding="utf-8") as f:
+    data = json.load(f)
+
+print(convert_to_rub(data[1]))
+get_transactions()
