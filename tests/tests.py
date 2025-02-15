@@ -8,6 +8,7 @@ from src.generators.generators import filter_by_state as filter_by_state_card
 from src.generators.generators import transaction_descriptions
 from src.masks.masks import get_mask_account, get_mask_card_number
 from src.processing.processing import filter_by_state, sort_by_date
+from src.transactions.transactions import read_transactions_csv, read_transactions_excel
 from src.utils.transaction import get_transactions
 from src.widget.widget import get_date, mask_account_card
 
@@ -113,3 +114,9 @@ with open(file_path, "r", encoding="utf-8") as f:
 
 print(convert_to_rub(data[1]))
 get_transactions()
+
+file_path_csv = os.path.join(BASE_DIR, "data", "transactions.csv")
+file_path_xlsx = os.path.join(BASE_DIR, "data", "transactions_excel.xlsx")
+
+print(read_transactions_csv(file_path_csv))
+print(read_transactions_excel(file_path_xlsx))

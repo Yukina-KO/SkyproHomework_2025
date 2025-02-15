@@ -92,6 +92,37 @@ def example_function(x: int, y: int) -> int:
 result = example_function(1, 2)
 ```
 
+### 9. Чтение транзакций (CSV, Excel)
+Функции, которые позволяют считывать финансовые операции из CSV- и Excel-файлов и возвращать результат в удобном для дальнейшей обработки виде (список словарей).
+
+#### Возможности:
+- Использует pandas.read_csv для чтения CSV-файла.
+- Разделитель по умолчанию ';'.
+- Возвращает список словарей, где каждая строка соответствует транзакции.
+
+**Функция**: `read_transactions_csv`
+```python
+read_transactions_csv(file_path: str) -> List[Dict[Hashable, str]]
+```
+#### Возможности:
+- Использует pandas.read_excel для чтения Excel-файла (XLS/XLSX).
+- Возвращает список словарей, где каждая строка соответствует транзакции.
+
+**Функция**: `read_transactions_excel`
+```python
+read_transactions_excel(file_path: str) -> List[Dict[Hashable, str]]
+```
+Пример использования:
+```python
+from src.transactions.transactions import read_transactions_csv, read_transactions_excel
+
+csv_data = read_transactions_csv("data/transactions.csv")
+excel_data = read_transactions_excel("data/transactions_excel.xlsx")
+
+print(csv_data)    # Список словарей транзакций из CSV
+print(excel_data)  # Список словарей транзакций из Excel
+```
+
 ---
 
 ## Установка
@@ -127,6 +158,8 @@ project/
 │   ├── processing/
 │   │   ├── filter_by_state.py
 │   │   ├── sort_by_date.py
+│   ├── transactions/
+│   │   ├── transactions.py
 │   ├── utils/
 │   │   ├── transaction.py
 │   ├── widget/
@@ -137,7 +170,8 @@ project/
 │   ├── test_generators.py
 │   ├── test_masks.py
 │   ├── test_processing.py
-│   ├── test_ransactions.py
+│   ├── test_transactions.py
+│   ├── test_utils_transactions.py
 │   ├── test_widget.py
 └── README.md
 ```
@@ -238,6 +272,36 @@ def test_log_file_output():
         assert "Функция test_function завершена. Результат: 3" in log_content
 ```
 
+### Тесты для чтения транзакций (test_transactions.py)
+В этом модуле тестируется логика чтения финансовых операций из CSV- и Excel-файлов.
+Используются mock и patch для подмены вызовов pandas.read_csv и pandas.read_excel:
+#### Тест test_read_transactions_csv проверяет:
+- Корректный вызов read_csv с нужными аргументами (file_path, sep=';').
+- Правильное преобразование данных DataFrame.to_dict(orient="records").
+- Соответствие возвращаемого списка ожидаемому формату.
+#### Тест test_read_transactions_excel проверяет:
+- Корректный вызов read_excel с заданным путем к файлу.
+- Преобразование в список словарей (to_dict(orient="records")).
+- Правильность полученных данных по ключам и значениям.
+
+Пример проверки (из test_transactions.py):
+
+```python
+@patch("src.transactions.transactions.pd.read_csv")
+def test_read_transactions_csv(mock_read_csv: MagicMock) -> None:
+    mock_df = MagicMock()
+    mock_df.to_dict.return_value = [
+        {"id": "123", "amount": "100", "currency": "RUB"},
+        {"id": "456", "amount": "200", "currency": "USD"}
+    ]
+    mock_read_csv.return_value = mock_df
+
+    result = read_transactions_csv("fake/path/transactions.csv")
+    assert len(result) == 2
+    assert result[0]["amount"] == "100"
+    assert result[1]["currency"] == "USD"
+```
+
 ---
 
 Для запуска тестов используйте:
@@ -248,4 +312,5 @@ pytest tests/test_processing.py
 pytest tests/test_widget.py
 pytest tests/test_generators.py
 pytest tests/test_decorators.py
+pytest tests/test_utils_transactions.py
 pytest tests/test_transactions.py

@@ -1,12 +1,10 @@
 import json
 from unittest.mock import MagicMock, mock_open, patch
 
-
 # import requests_mock
 from dotenv import load_dotenv
 
 from src.external_api.external_api import convert_to_rub
-
 # Импортируем функции, которые будем тестировать
 from src.utils.transaction import get_transactions
 
