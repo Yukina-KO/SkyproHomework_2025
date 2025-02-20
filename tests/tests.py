@@ -116,7 +116,7 @@ print(convert_to_rub(data[1]))
 get_transactions()
 
 file_path_csv = os.path.join(BASE_DIR, "data", "transactions.csv")
-file_path_xlsx = os.path.join(BASE_DIR, "data", "transactions_excel.xlsx")
+file_path_xlsx = os.path.join(BASE_DIR, "data", "transactions.xlsx")
 
 print(read_transactions_csv(file_path_csv))
 print(read_transactions_excel(file_path_xlsx))

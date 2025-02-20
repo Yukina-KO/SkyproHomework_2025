@@ -117,7 +117,7 @@ read_transactions_excel(file_path: str) -> List[Dict[Hashable, str]]
 from src.transactions.transactions import read_transactions_csv, read_transactions_excel
 
 csv_data = read_transactions_csv("data/transactions.csv")
-excel_data = read_transactions_excel("data/transactions_excel.xlsx")
+excel_data = read_transactions_excel("data/transactions.xlsx")
 
 print(csv_data)    # Список словарей транзакций из CSV
 print(excel_data)  # Список словарей транзакций из Excel
@@ -152,6 +152,8 @@ project/
 │   │   ├── filter_by_state.py
 │   │   ├── transaction_descriptions.py
 │   │   ├── card_number_generator.py
+│   │   ├── filter_transactions_by_description.py
+│   │   ├── count_transactions_by_category.py
 │   ├── masks/
 │   │   ├── get_mask_account.py
 │   │   ├── get_mask_card_number.py
@@ -165,6 +167,7 @@ project/
 │   ├── widget/
 │   │   ├── get_date.py
 │   │   ├── mask_account_card.py
+│   ├── main.py
 │── tests/
 │   ├── test_decorators.py
 │   ├── test_generators.py
